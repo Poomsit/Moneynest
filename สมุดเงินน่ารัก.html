@@ -3,223 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MoneyNest V0.3</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>MoneyNest v4</title>
 
 <style>
 :root{
-  --bg:#F4FAF7;
-  --green:#2E9D7A;
-  --red:#ff5c5c;
-  --card:#fff;
-  --text:#1f2d2a;
-  --muted:#6b7c78;
+  --bg:#0b1220;
+  --card:#111b2e;
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#60a5fa;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
 }
 
-*{font-family:'Sarabun';box-sizing:border-box;}
-body{margin:0;background:var(--bg);color:var(--text);}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:var(--bg);
+  color:var(--text);
+}
 
-.app{max-width:420px;margin:auto;padding-bottom:80px}
+.container{
+  max-width:430px;
+  margin:auto;
+  padding:14px;
+}
 
-/* HEADER */
 .header{
-  background:linear-gradient(135deg,#66C7A0,#2E9D7A);
-  color:white;
-  padding:20px;
-  border-radius:0 0 20px 20px;
+  background:linear-gradient(135deg,#16a34a,#22c55e);
+  padding:16px;
+  border-radius:18px;
 }
 
-.header h1{margin:0;font-size:20px;}
-.header p{margin:5px 0 0;font-size:12px;opacity:.9}
-
-/* SUMMARY */
-.summary{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:15px;
+.balance{
+  font-size:24px;
+  font-weight:bold;
 }
 
-.box{
-  background:rgba(255,255,255,.15);
-  padding:10px;
-  border-radius:14px;
-}
-
-.box h3{margin:0;font-size:12px;}
-.box div{font-size:18px;font-weight:700;margin-top:5px}
-
-/* FORM */
-.form{
-  background:#fff;
-  margin:15px;
+/* CARDS */
+.card{
+  background:var(--card);
   padding:12px;
-  border-radius:16px;
-  box-shadow:0 6px 16px rgba(0,0,0,.05);
+  border-radius:14px;
+  margin-top:10px;
 }
 
-input,select{
+input, select{
   width:100%;
   padding:10px;
-  margin-top:6px;
+  margin-top:8px;
+  border:none;
   border-radius:10px;
-  border:1px solid #ddd;
+  background:#0f1a2b;
+  color:white;
 }
 
 button{
   width:100%;
-  margin-top:10px;
   padding:12px;
   border:none;
   border-radius:12px;
-  background:var(--green);
-  color:white;
-  font-weight:700;
+  margin-top:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.income{ background:#22c55e; color:white; }
+.expense{ background:#ef4444; color:white; }
+.goal{ background:#60a5fa; color:white; }
+
+/* GOAL CARD */
+.goal-card{
+  background:var(--card);
+  padding:12px;
+  border-radius:14px;
+  margin-top:10px;
+}
+
+.bar{
+  height:10px;
+  background:#1f2937;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,#60a5fa,#22c55e);
 }
 
 /* LIST */
-.list{padding:0 15px}
-
 .item{
-  background:#fff;
-  padding:12px;
-  border-radius:14px;
-  margin-bottom:10px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  padding:8px;
+  border-bottom:1px solid #1f2937;
 }
-
-.left{
-  display:flex;
-  flex-direction:column;
-}
-
-.cat{font-weight:700}
-.note{font-size:12px;color:var(--muted)}
-
-.amount{
-  font-weight:700;
-}
-
-.expense{color:var(--red)}
-.income{color:var(--green)}
-
-.del{
-  border:none;
-  background:none;
-  color:#999;
-  font-size:16px;
-  cursor:pointer;
-}
+.small{ font-size:12px; color:var(--muted); }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
-  <!-- HEADER -->
   <div class="header">
-    <h1>💰 MoneyNest V0.3</h1>
-    <p>ระบบบันทึกรายรับรายจ่ายใช้งานจริง</p>
-
-    <div class="summary">
-      <div class="box">
-        <h3>รายรับ</h3>
-        <div id="income">0</div>
-      </div>
-      <div class="box">
-        <h3>รายจ่าย</h3>
-        <div id="expense">0</div>
-      </div>
-    </div>
+    <div>💚 MoneyNest</div>
+    <div class="balance" id="balance">0 THB</div>
   </div>
 
-  <!-- FORM -->
-  <div class="form">
-    <select id="type">
-      <option value="income">รายรับ</option>
-      <option value="expense">รายจ่าย</option>
-    </select>
-
-    <input id="amount" type="number" placeholder="จำนวนเงิน">
+  <!-- TRANSACTION -->
+  <div class="card">
+    <input id="amount" placeholder="จำนวนเงิน">
     <input id="note" placeholder="หมายเหตุ">
 
-    <button onclick="addItem()">+ เพิ่มรายการ</button>
+    <button class="income" onclick="add('income')">+ รายรับ</button>
+    <button class="expense" onclick="add('expense')">- รายจ่าย</button>
   </div>
 
+  <!-- GOALS -->
+  <div class="card">
+    <h3>🎯 เป้าหมาย</h3>
+
+    <input id="gname" placeholder="ชื่อเป้าหมาย (เช่น ไปญี่ปุ่น)">
+    <input id="gtarget" placeholder="เป้าหมายเงิน">
+
+    <button class="goal" onclick="addGoal()">+ เพิ่มเป้าหมาย</button>
+  </div>
+
+  <div id="goals"></div>
+
   <!-- LIST -->
-  <div class="list" id="list"></div>
+  <div class="card">
+    <h3>📜 รายการ</h3>
+    <div id="list"></div>
+  </div>
 
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("moneynest") || "[]");
+let data = JSON.parse(localStorage.getItem("mn_v4")) || [];
+let goals = JSON.parse(localStorage.getItem("mn_goal")) || [];
 
 function save(){
-  localStorage.setItem("moneynest", JSON.stringify(data));
+  localStorage.setItem("mn_v4", JSON.stringify(data));
+  localStorage.setItem("mn_goal", JSON.stringify(goals));
+  render();
 }
 
-function addItem(){
-  const type = document.getElementById("type").value;
-  const amount = Number(document.getElementById("amount").value);
-  const note = document.getElementById("note").value;
+function add(type){
+  let amt = Number(document.getElementById("amount").value);
+  let note = document.getElementById("note").value;
 
-  if(!amount) return;
+  if(!amt) return;
 
-  data.push({
-    id:Date.now(),
-    type,
-    amount,
-    note
-  });
+  data.push({type, amt, note, time:new Date().toLocaleString()});
 
   document.getElementById("amount").value="";
   document.getElementById("note").value="";
 
   save();
-  render();
 }
 
-function del(id){
-  data = data.filter(i=>i.id!==id);
+function addGoal(){
+  let name = document.getElementById("gname").value;
+  let target = Number(document.getElementById("gtarget").value);
+
+  if(!name || !target) return;
+
+  goals.push({
+    name,
+    target,
+    saved:0
+  });
+
+  document.getElementById("gname").value="";
+  document.getElementById("gtarget").value="";
+
   save();
-  render();
+}
+
+function addToGoal(i){
+  let amt = prompt("เพิ่มเงินเข้าเป้าหมาย:");
+  if(!amt) return;
+
+  goals[i].saved += Number(amt);
+  save();
 }
 
 function render(){
 
-  let income = 0;
-  let expense = 0;
+  // BALANCE
+  let bal=0;
+  let html="";
 
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+  data.slice().reverse().forEach(d=>{
+    if(d.type==="income") bal+=d.amt;
+    else bal-=d.amt;
 
-  data.slice().reverse().forEach(i=>{
-    if(i.type==="income") income += i.amount;
-    else expense += i.amount;
-
-    list.innerHTML += `
+    html += `
       <div class="item">
-        <div class="left">
-          <div class="cat">${i.type==="income"?"💰 รายรับ":"💸 รายจ่าย"}</div>
-          <div class="note">${i.note || "-"}</div>
+        <div>
+          ${d.note || "-"}
+          <div class="small">${d.time}</div>
         </div>
-
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="amount ${i.type}">
-            ${i.type==="income"?"+" : "-"}${i.amount}
-          </div>
-          <button class="del" onclick="del(${i.id})">✕</button>
+        <div style="color:${d.type==='income'?'#22c55e':'#ef4444'}">
+          ${d.type==='income'?'+':'-'}${d.amt}
         </div>
       </div>
     `;
   });
 
-  document.getElementById("income").innerText = income;
-  document.getElementById("expense").innerText = expense;
+  document.getElementById("balance").innerText = "฿"+bal;
+
+  // GOALS
+  let ghtml="";
+
+  goals.forEach((g,i)=>{
+    let percent = Math.min(100,(g.saved/g.target)*100);
+
+    ghtml += `
+      <div class="goal-card">
+        <b>${g.name}</b>
+
+        <div class="small">
+          ${g.saved} / ${g.target} THB (${percent.toFixed(0)}%)
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" style="width:${percent}%"></div>
+        </div>
+
+        <button class="goal" onclick="addToGoal(${i})">
+          + เพิ่มเงินเข้าเป้าหมาย
+        </button>
+      </div>
+    `;
+  });
+
+  document.getElementById("goals").innerHTML = ghtml;
+  document.getElementById("list").innerHTML = html;
 }
 
 render();
